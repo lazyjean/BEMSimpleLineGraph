@@ -156,7 +156,7 @@
 
 #pragma mark - SimpleLineGraph Data Source
 - (NSInteger)maxNumberOfPointsInLineGraph:(BEMSimpleLineGraphView *)graph {
-    return (int)[self.arrayOfValues count] + 2;
+    return (int)[self.arrayOfValues count] + 5;
 }
 
 - (NSInteger)numberOfPointsInLineGraph:(BEMSimpleLineGraphView *)graph {

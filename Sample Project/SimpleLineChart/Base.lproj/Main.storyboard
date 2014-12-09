@@ -86,7 +86,7 @@
                                 <rect key="frame" x="0.0" y="472" width="320" height="2"/>
                             </progressView>
                         </subviews>
-                        <color key="backgroundColor" red="0.52549019610000003" green="0.7843137255" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.99740349506740489" green="0.96454765371632256" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" title="Population Growth" id="jTt-cf-4Tw">
                         <barButtonItem key="leftBarButtonItem" title="Stat." id="pPS-9K-h6J">
