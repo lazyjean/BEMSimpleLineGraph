@@ -287,6 +287,10 @@
 /// Line Graph Data Source. Used to populate the graph with data, similar to how a UITableView works.
 @protocol BEMSimpleLineGraphDataSource <NSObject>
 
+/** The number of points along the X-axis of the graph.
+ @param graph The graph object requesting the total number of points.
+ @return The maximum number of points in the line graph(meant to length of x-axis). */
+- (NSInteger)maxNumberOfPointsInLineGraph:(BEMSimpleLineGraphView *)graph;
 
 @required
 

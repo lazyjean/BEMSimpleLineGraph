@@ -76,6 +76,7 @@ typedef NS_ENUM(NSUInteger, BEMLineGradientDirection) {
 /** Draw a thin, translucent, frame on the edge of the graph to separate it from the labels on the X-Axis and the Y-Axis. */
 @property (nonatomic) BOOL enableRefrenceFrame;
 
+@property (nonatomic) NSInteger maxHorizontalUnitCount;
 
 
 //----- COLORS -----//

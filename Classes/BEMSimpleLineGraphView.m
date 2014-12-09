@@ -31,6 +31,9 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     /// The number of Points in the Graph
     NSInteger numberOfPoints;
     
+    //the max number of Points in the Graph
+    NSInteger maxNumberOfPoints;
+    
     /// The closest point to the touch point
     BEMCircle *closestDot;
     CGFloat currentlyCloser;
@@ -215,8 +218,16 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
         
     } else numberOfPoints = 0;
     
+    // Get the max number of data points from the delegate
+    if ([self.dataSource respondsToSelector:@selector(maxNumberOfPointsInLineGraph:)]) {
+        maxNumberOfPoints = [self.dataSource maxNumberOfPointsInLineGraph:self];
+    }
+
+    //make sure maxNumberOfPoints hold the real max number points.
+    maxNumberOfPoints = MAX(maxNumberOfPoints, numberOfPoints);
+    
     // There are no points to load
-    if (numberOfPoints == 0) {
+    if (maxNumberOfPoints == 0) {
         if (self.delegate &&
             [self.delegate respondsToSelector:@selector(noDataLabelEnableForLineGraph:)] &&
             ![self.delegate noDataLabelEnableForLineGraph:self]) return;
@@ -241,7 +252,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
             [self.delegate lineGraphDidFinishLoading:self];
         return;
         
-    } else if (numberOfPoints == 1) {
+    } else if (maxNumberOfPoints == 1) {
         NSLog(@"[BEMSimpleLineGraph] Data source contains only one data point. Add more data to the data source and then reload the graph.");
         BEMCircle *circleDot = [[BEMCircle alloc] initWithFrame:CGRectMake(0, 0, self.sizePoint, self.sizePoint)];
         circleDot.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
@@ -388,7 +399,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
             
             [dataPoints addObject:[NSNumber numberWithFloat:dotValue]];
             
-            positionOnXAxis = (((self.frame.size.width - self.YAxisLabelXOffset) / (numberOfPoints - 1)) * i) + self.YAxisLabelXOffset;
+            positionOnXAxis = (((self.frame.size.width - self.YAxisLabelXOffset) / (maxNumberOfPoints - 1)) * i) + self.YAxisLabelXOffset;
             positionOnYAxis = [self yPositionForDotValue:dotValue];
             
             [yAxisValues addObject:[NSNumber numberWithFloat:positionOnYAxis]];
@@ -470,6 +481,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     }
     
     line.frameOffset = self.XAxisLabelYOffset;
+    line.maxHorizontalUnitCount = maxNumberOfPoints;
     
     line.color = self.colorLine;
     line.lineGradient = self.gradientLine;
@@ -510,13 +522,13 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     [xAxisLabels removeAllObjects];
     [xAxisLabelPoints removeAllObjects];
     
-    if (numberOfGaps >= (numberOfPoints - 1)) {
+    if (numberOfGaps >= (maxNumberOfPoints - 1)) {
         NSString *firstXLabel = @"";
         NSString *lastXLabel = @"";
         
         if ([self.dataSource respondsToSelector:@selector(lineGraph:labelOnXAxisForIndex:)]) {
             firstXLabel = [self.dataSource lineGraph:self labelOnXAxisForIndex:0];
-            lastXLabel = [self.dataSource lineGraph:self labelOnXAxisForIndex:(numberOfPoints - 1)];
+            lastXLabel = [self.dataSource lineGraph:self labelOnXAxisForIndex:(maxNumberOfPoints - 1)];
             
         } else if ([self.delegate respondsToSelector:@selector(labelOnXAxisForIndex:)]) {
             [self printDeprecationWarningForOldMethod:@"labelOnXAxisForIndex:" andReplacementMethod:@"lineGraph:labelOnXAxisForIndex:"];
@@ -524,7 +536,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
             firstXLabel = [self.delegate labelOnXAxisForIndex:0];
-            lastXLabel = [self.delegate labelOnXAxisForIndex:(numberOfPoints - 1)];
+            lastXLabel = [self.delegate labelOnXAxisForIndex:(maxNumberOfPoints - 1)];
 #pragma clang diagnostic pop
             
         } else if ([self.delegate respondsToSelector:@selector(lineGraph:labelOnXAxisForIndex:)]) {
@@ -569,7 +581,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
         
         @autoreleasepool {
             
-            for (int i = 1; i <= (numberOfPoints/numberOfGaps); i++) {
+            for (int i = 1; i <= (maxNumberOfPoints/numberOfGaps); i++) {
                 NSString *xAxisLabelText = @"";
                 
                 if ([self.dataSource respondsToSelector:@selector(lineGraph:labelOnXAxisForIndex:)]) {
@@ -607,7 +619,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
                 CGRect rect = labelXAxis.frame;
                 rect.size = lRect.size;
                 labelXAxis.frame = rect;
-                [labelXAxis setCenter:CGPointMake(((self.viewForBaselineLayout.frame.size.width - self.YAxisLabelXOffset) / (numberOfPoints-1)) * (i*numberOfGaps - 1 - offset) + self.YAxisLabelXOffset, self.frame.size.height - lRect.size.height/2)];
+                [labelXAxis setCenter:CGPointMake(((self.viewForBaselineLayout.frame.size.width - self.YAxisLabelXOffset) / (maxNumberOfPoints-1)) * (i*numberOfGaps - 1 - offset) + self.YAxisLabelXOffset, self.frame.size.height - lRect.size.height/2)];
                 
                 NSNumber *xAxisLabelCoordinate = [NSNumber numberWithFloat:labelXAxis.center.x-self.YAxisLabelXOffset];
                 [xAxisLabelPoints addObject:xAxisLabelCoordinate];

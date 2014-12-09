@@ -60,12 +60,12 @@
         [referenceLinesPath closePath];
     } else referenceLinesPath = nil;
     
-    
     // ---------------------------//
     // ----- Draw Graph Line -----//
     // ---------------------------//
     CGPoint CP1;
     CGPoint CP2;
+    CGFloat maxWidth = self.frame.size.width * (self.arrayOfPoints.count -1.0) / (self.maxHorizontalUnitCount - 1.0);
     
      // BEZIER CURVE
     if (self.bezierCurveIsEnabled == YES) {
@@ -91,28 +91,28 @@
     CGFloat tensionBezier2 = 0.3;
     
     if (self.xAxisBackgroundColor == self.bottomColor && self.xAxisBackgroundAlpha == self.bottomAlpha) {
-        [fillBottom moveToPoint:CGPointMake(self.frame.size.width, self.frame.size.height)];
+        [fillBottom moveToPoint:CGPointMake(maxWidth, self.frame.size.height)];
         [fillBottom addLineToPoint:CGPointMake(0, self.frame.size.height)];
     } else {
         UIBezierPath *fillxAxis = [UIBezierPath bezierPath];
-        [fillBottom moveToPoint:CGPointMake(self.frame.size.width, self.frame.size.height - self.frameOffset)];
+        [fillBottom moveToPoint:CGPointMake(maxWidth, self.frame.size.height - self.frameOffset)];
         [fillBottom addLineToPoint:CGPointMake(0, self.frame.size.height - self.frameOffset)];
 
-        [fillxAxis moveToPoint:CGPointMake(self.frame.size.width, self.frame.size.height - self.frameOffset)];
+        [fillxAxis moveToPoint:CGPointMake(maxWidth, self.frame.size.height - self.frameOffset)];
         [fillxAxis addLineToPoint:CGPointMake(0, self.frame.size.height - self.frameOffset)];
         [fillxAxis addLineToPoint:CGPointMake(0, self.frame.size.height)];
-        [fillxAxis addLineToPoint:CGPointMake(self.frame.size.width, self.frame.size.height)];
+        [fillxAxis addLineToPoint:CGPointMake(maxWidth, self.frame.size.height)];
         [self.xAxisBackgroundColor set];
         [fillxAxis fillWithBlendMode:kCGBlendModeNormal alpha:self.xAxisBackgroundAlpha];
     }
     
     
-    [fillTop moveToPoint:CGPointMake(self.frame.size.width, 0)];
+    [fillTop moveToPoint:CGPointMake(maxWidth, 0)];
     [fillTop addLineToPoint:CGPointMake(0, 0)];
     
     for (int i = 0; i<[self.arrayOfPoints count]-1; i++) {
-        p1 = CGPointMake((self.frame.size.width/([self.arrayOfPoints count] - 1))*i, [[self.arrayOfPoints objectAtIndex:i] floatValue]);
-        p2 = CGPointMake((self.frame.size.width/([self.arrayOfPoints count] - 1))*(i+1), [[self.arrayOfPoints objectAtIndex:i+1] floatValue]);
+        p1 = CGPointMake((maxWidth/([self.arrayOfPoints count] - 1))*i, [[self.arrayOfPoints objectAtIndex:i] floatValue]);
+        p2 = CGPointMake((maxWidth/([self.arrayOfPoints count] - 1))*(i+1), [[self.arrayOfPoints objectAtIndex:i+1] floatValue]);
         
         [line moveToPoint:p1];
         [fillBottom addLineToPoint:p1];
@@ -123,7 +123,7 @@
             tensionBezier2 = 0.3;
             
             if (i > 0) { // Exception for first line because there is no previous point
-                p0 = CGPointMake((self.frame.size.width/([self.arrayOfPoints count] - 1))*(i-1), [[self.arrayOfPoints objectAtIndex:i-1] floatValue]);
+                p0 = CGPointMake((maxWidth/([self.arrayOfPoints count] - 1))*(i-1), [[self.arrayOfPoints objectAtIndex:i-1] floatValue]);
                 
                 if ([[self.arrayOfValues objectAtIndexedSubscript:i+1] floatValue] - [[self.arrayOfValues objectAtIndexedSubscript:i] floatValue] == [[self.arrayOfValues objectAtIndexedSubscript:i] floatValue] - [[self.arrayOfValues objectAtIndexedSubscript:i-1] floatValue]) {
                     tensionBezier1 = 0;
@@ -135,7 +135,7 @@
             }
             
             if (i<[self.arrayOfPoints count] - 2) { // Exception for last line because there is no next point
-                p3 = CGPointMake((self.frame.size.width/([self.arrayOfPoints count] - 1))*(i+2), [[self.arrayOfPoints objectAtIndex:i+2] floatValue]);
+                p3 = CGPointMake((maxWidth/([self.arrayOfPoints count] - 1))*(i+2), [[self.arrayOfPoints objectAtIndex:i+2] floatValue]);
                 
                 if ([[self.arrayOfValues objectAtIndexedSubscript:i+2] floatValue] - [[self.arrayOfValues objectAtIndexedSubscript:i+1] floatValue] == [[self.arrayOfValues objectAtIndexedSubscript:i+1] floatValue] - [[self.arrayOfValues objectAtIndexedSubscript:i] floatValue]) {
                     tensionBezier2 = 0;

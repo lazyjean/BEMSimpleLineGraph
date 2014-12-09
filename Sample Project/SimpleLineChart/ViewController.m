@@ -32,7 +32,8 @@
     totalNumber = 0;
     
     for (int i = 0; i < 9; i++) {
-        [self.arrayOfValues addObject:@([self getRandomInteger])]; // Random values for the graph
+        NSInteger value = 2*i + 5;
+        [self.arrayOfValues addObject:@(value)]; // Random values for the graph
         [self.arrayOfDates addObject:[NSString stringWithFormat:@"%@", @(2000 + i)]]; // Dates for the X-Axis of the graph
         
         totalNumber = totalNumber + [[self.arrayOfValues objectAtIndex:i] intValue]; // All of the values added together
@@ -154,6 +155,9 @@
 }
 
 #pragma mark - SimpleLineGraph Data Source
+- (NSInteger)maxNumberOfPointsInLineGraph:(BEMSimpleLineGraphView *)graph {
+    return (int)[self.arrayOfValues count] + 2;
+}
 
 - (NSInteger)numberOfPointsInLineGraph:(BEMSimpleLineGraphView *)graph {
     return (int)[self.arrayOfValues count];
@@ -165,11 +169,14 @@
 
 #pragma mark - SimpleLineGraph Delegate
 
-- (NSInteger)numberOfGapsBetweenLabelsOnLineGraph:(BEMSimpleLineGraphView *)graph {
-    return 1;
-}
+//- (NSInteger)numberOfGapsBetweenLabelsOnLineGraph:(BEMSimpleLineGraphView *)graph {
+//    return 1;
+//}
 
 - (NSString *)lineGraph:(BEMSimpleLineGraphView *)graph labelOnXAxisForIndex:(NSInteger)index {
+    if (index >= [self.arrayOfDates count]) {
+        return @"ex";
+    }
     NSString *label = [self.arrayOfDates objectAtIndex:index];
     return [label stringByReplacingOccurrencesOfString:@" " withString:@"\n"];
 }
