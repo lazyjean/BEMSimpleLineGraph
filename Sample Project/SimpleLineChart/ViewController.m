@@ -32,8 +32,7 @@
     totalNumber = 0;
     
     for (int i = 0; i < 9; i++) {
-        NSInteger value = 2*i + 5;
-        [self.arrayOfValues addObject:@(value)]; // Random values for the graph
+        [self.arrayOfValues addObject:@([self getRandomInteger])]; // Random values for the graph
         [self.arrayOfDates addObject:[NSString stringWithFormat:@"%@", @(2000 + i)]]; // Dates for the X-Axis of the graph
         
         totalNumber = totalNumber + [[self.arrayOfValues objectAtIndex:i] intValue]; // All of the values added together
@@ -169,9 +168,9 @@
 
 #pragma mark - SimpleLineGraph Delegate
 
-//- (NSInteger)numberOfGapsBetweenLabelsOnLineGraph:(BEMSimpleLineGraphView *)graph {
-//    return 1;
-//}
+- (NSInteger)numberOfGapsBetweenLabelsOnLineGraph:(BEMSimpleLineGraphView *)graph {
+    return 1;
+}
 
 - (NSString *)lineGraph:(BEMSimpleLineGraphView *)graph labelOnXAxisForIndex:(NSInteger)index {
     if (index >= [self.arrayOfDates count]) {
